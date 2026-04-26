@@ -283,7 +283,7 @@ export const mapMarkers: MapMarker[] = [
   { id: "m12", lat: 23.2599, lng: 77.4126, pin: "462001", state: "Madhya Pradesh",district: "Bhopal",       tier: "underserved",nearestICU: 4,   nearestOnc: 22,  population: 1880000, desertScore: 41, gapTypes: ["pediatric"],                             classification: "UNDERSERVED" },
   { id: "m13", lat: 21.9497, lng: 80.7081, pin: "481001", state: "Madhya Pradesh",district: "Balaghat",     tier: "desert",     nearestICU: 56,  nearestOnc: 178, population: 320000,  desertScore: 87, gapTypes: ["oncology","trauma"],                    classification: "CRITICAL" },
   { id: "m14", lat: 23.3441, lng: 85.3096, pin: "834001", state: "Jharkhand",     district: "Ranchi",       tier: "underserved",nearestICU: 6,   nearestOnc: 34,  population: 1080000, desertScore: 47, gapTypes: ["oncology"],                             classification: "UNDERSERVED" },
-  { id: "m15", lat: 24.4844, lng: 86.6979, pin: "814165", state: "Jharkhand",     district: "Dumka",        tier: "desert",     lat2: 0,        nearestICU: 78,  nearestOnc: 184, population: 380000,  desertScore: 91, gapTypes: ["oncology","pediatric"],                 classification: "CRITICAL" } as any,
+  { id: "m15", lat: 24.4844, lng: 86.6979, pin: "814165", state: "Jharkhand",     district: "Dumka",        tier: "desert",     nearestICU: 78,  nearestOnc: 184, population: 380000,  desertScore: 91, gapTypes: ["oncology","pediatric"],                 classification: "CRITICAL" },
   { id: "m16", lat: 22.5726, lng: 88.3639, pin: "700001", state: "West Bengal",   district: "Kolkata",      tier: "adequate",   nearestICU: 2,   nearestOnc: 5,   population: 4500000, desertScore: 11, gapTypes: [],                                       classification: "ADEQUATE" },
 ];
 

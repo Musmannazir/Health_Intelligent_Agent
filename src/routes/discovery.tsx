@@ -1,0 +1,185 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, Sparkles, X } from "lucide-react";
+import { facilities, type Facility, traceSteps, tokenUsage } from "@/data/mockData";
+import { FacilityCard } from "@/components/FacilityCard";
+import { GlassCard } from "@/components/GlassCard";
+
+export const Route = createFileRoute("/discovery")({
+  head: () => ({
+    meta: [
+      { title: "Facility Discovery — AyuGraph" },
+      { name: "description", content: "Query Agent: natural-language search across India's healthcare facility index with vector retrieval and trust validation." },
+      { property: "og:title", content: "Facility Discovery — AyuGraph" },
+      { property: "og:description", content: "Ask anything: 'Oncology centers in rural Bihar with ICU capacity'." },
+    ],
+  }),
+  component: Discovery,
+});
+
+const suggestions = [
+  "Trauma centers in UP",
+  "Dialysis units near Delhi",
+  "Pediatric hospitals in Rajasthan",
+  "Cancer care in Jharkhand",
+];
+
+const phases = ["Parsing Query", "Vector Search", "Validating Results"] as const;
+
+function Discovery() {
+  const [q, setQ] = useState("");
+  const [phase, setPhase] = useState<-1 | 0 | 1 | 2 | 3>(-1); // -1 idle, 0/1/2 thinking, 3 done
+  const [trace, setTrace] = useState<Facility | null>(null);
+
+  const run = (queryText?: string) => {
+    if (queryText !== undefined) setQ(queryText);
+    setPhase(0);
+    setTimeout(() => setPhase(1), 1500);
+    setTimeout(() => setPhase(2), 3000);
+    setTimeout(() => setPhase(3), 4500);
+  };
+
+  return (
+    <div className="flex flex-col gap-6">
+      {/* Query bar */}
+      <GlassCard className="flex flex-col gap-4">
+        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          <Sparkles className="h-3 w-3 text-teal" />
+          Query Agent · Terminal Interface
+        </div>
+        <div className="flex items-center gap-3 rounded-md border border-[var(--color-border-strong)] bg-[oklch(0.10_0.018_250)] px-4 py-3">
+          <span className="font-mono text-teal">{">"}</span>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && q && run()}
+            placeholder="Ask anything... e.g., 'Find oncology centers in rural Bihar with ICU capacity'"
+            className="flex-1 bg-transparent font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground"
+          />
+          <span className="caret font-mono" />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {suggestions.map((s) => (
+            <button
+              key={s}
+              onClick={() => run(s)}
+              className="rounded-full border border-[var(--color-border)] bg-[oklch(0.20_0.02_250)] px-3 py-1 font-mono text-[11px] text-muted-foreground transition-colors hover:border-[var(--color-border-strong)] hover:text-teal"
+            >
+              {s}
+            </button>
+          ))}
+          <div className="ml-auto" />
+          <button
+            onClick={() => q && run()}
+            disabled={!q}
+            className="animate-pulse-glow inline-flex items-center gap-2 rounded-md bg-[var(--color-primary)] px-5 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--color-primary-foreground)] transition-opacity disabled:opacity-40 disabled:animate-none"
+          >
+            <Search className="h-3.5 w-3.5" /> Run Query
+          </button>
+        </div>
+      </GlassCard>
+
+      {/* Thinking */}
+      <AnimatePresence>
+        {phase >= 0 && phase < 3 && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <GlassCard>
+              <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-teal">Agent Thinking…</div>
+              <div className="flex items-center gap-3">
+                {phases.map((label, i) => {
+                  const active = phase === i;
+                  const done = phase > i;
+                  return (
+                    <div key={label} className="flex flex-1 items-center gap-3">
+                      <div className="flex flex-1 flex-col gap-1">
+                        <div className="flex items-center gap-2 font-mono text-xs">
+                          <span className={done ? "text-emerald" : active ? "text-teal" : "text-muted-foreground"}>
+                            {done ? "✓" : active ? "→" : "○"}
+                          </span>
+                          <span className={active ? "text-foreground" : done ? "text-emerald" : "text-muted-foreground"}>
+                            {label}
+                          </span>
+                        </div>
+                        <div className="h-1 overflow-hidden rounded-full bg-[oklch(0.24_0.025_250)]">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: done ? "100%" : active ? "100%" : "0%" }}
+                            transition={{ duration: active ? 1.4 : 0, ease: "easeInOut" }}
+                            className="h-full bg-[var(--color-primary)]"
+                          />
+                        </div>
+                      </div>
+                      {i < 2 && <span className="text-muted-foreground">·</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            </GlassCard>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Results */}
+      {phase === 3 && (
+        <>
+          <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+            <span><span className="text-teal">{facilities.length}</span> facilities · trust-weighted ranking</span>
+            <span>latency 84ms · confidence 91%</span>
+          </div>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {facilities.map((f, i) => (
+              <FacilityCard key={f.id} f={f} delay={i * 0.05} onTrace={setTrace} />
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Trace modal */}
+      <AnimatePresence>
+        {trace && <TraceModal facility={trace} onClose={() => setTrace(null)} />}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function TraceModal({ facility, onClose }: { facility: Facility; onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[oklch(0.05_0.01_250/0.85)] p-6 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
+        onClick={(e) => e.stopPropagation()}
+        className="glass-strong relative max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-xl p-6"
+      >
+        <button onClick={onClose} className="absolute right-4 top-4 text-muted-foreground hover:text-foreground">
+          <X className="h-5 w-5" />
+        </button>
+        <div className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-teal">Thought Process</div>
+        <h2 className="font-display text-2xl font-bold">{facility.name}</h2>
+        <p className="font-mono text-xs text-muted-foreground">
+          Token usage · in {tokenUsage.input} / out {tokenUsage.output} · ${tokenUsage.costUsd}
+        </p>
+
+        <ol className="mt-5 flex flex-col gap-3">
+          {traceSteps.map((s) => (
+            <li key={s.id} className="rounded-md border border-[var(--color-border)] bg-[oklch(0.16_0.018_250)] p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary)] font-mono text-[11px] font-bold text-[var(--color-primary-foreground)]">{s.id}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-teal">{s.agent}</span>
+                  <span className="font-display text-sm font-semibold">{s.title}</span>
+                </div>
+                <span className="font-mono text-[10px] text-muted-foreground">{s.ms}ms</span>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </motion.div>
+    </motion.div>
+  );
+}

@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { GlassCard } from "@/components/GlassCard";
-import { traceSteps, tokenUsage } from "@/data/mockData";
+import { getLatestTrace } from "@/lib/agenticMvp";
+import type { TraceStep } from "@/data/mockData";
 import { ChevronDown, ChevronRight, Coins, Cpu, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/trace")({
@@ -28,6 +29,9 @@ const pipeline = [
 
 function TracePage() {
   const [activeIdx, setActiveIdx] = useState(1);
+  const latest = getLatestTrace();
+  const traceSteps = latest.traceSteps;
+  const tokenUsage = latest.tokenUsage;
 
   return (
     <div className="flex flex-col gap-6">
@@ -36,9 +40,9 @@ function TracePage() {
         <div className="mb-4 flex items-center justify-between">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-teal">Pipeline</div>
-            <h3 className="font-display text-lg font-semibold">Trace · "Find cardiac surgery centers in Bihar"</h3>
+            <h3 className="font-display text-lg font-semibold">Trace · "{latest.query}"</h3>
           </div>
-          <div className="flex items-center gap-3 rounded-md border border-[var(--color-border)] bg-[oklch(0.16_0.018_250)] px-3 py-2">
+          <div className="flex items-center gap-3 rounded-xl border border-[var(--color-border)] bg-[oklch(1_0_0/0.9)] px-3 py-2">
             <Coins className="h-4 w-4 text-amber" />
             <div className="flex gap-4 font-mono text-[11px]">
               <span><span className="text-muted-foreground">in</span> <span className="text-foreground">{tokenUsage.input}</span></span>
@@ -56,8 +60,8 @@ function TracePage() {
                 className={
                   "rounded-md border px-3 py-2 font-mono text-[11px] uppercase tracking-wider transition-all " +
                   (activeIdx === i
-                    ? "border-[var(--color-primary)] bg-[oklch(0.79_0.14_188/0.18)] text-teal glow-teal"
-                    : "border-[var(--color-border)] bg-[oklch(0.16_0.018_250)] text-muted-foreground hover:text-foreground")
+                    ? "border-[var(--color-primary)] bg-[oklch(0.78_0.11_210/0.18)] text-teal"
+                    : "border-[var(--color-border)] bg-[oklch(0.98_0.006_220)] text-muted-foreground hover:text-foreground")
                 }
               >
                 {node.label}
@@ -90,22 +94,22 @@ function TracePage() {
   );
 }
 
-function StepCard({ step, idx }: { step: typeof traceSteps[number]; idx: number }) {
+function StepCard({ step, idx }: { step: TraceStep; idx: number }) {
   const [open, setOpen] = useState(idx < 2);
   return (
     <div className="relative -ml-12 pl-12">
-      <span className="absolute left-2 top-5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[var(--color-primary)] bg-[oklch(0.14_0.018_250)] font-mono text-[11px] font-bold text-teal glow-teal">
+      <span className="absolute left-2 top-5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[var(--color-primary)] bg-[oklch(1_0_0)] font-mono text-[11px] font-bold text-teal">
         {step.id}
       </span>
       <GlassCard delay={0}>
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <span className="rounded border border-[var(--color-border-strong)] bg-[oklch(0.79_0.14_188/0.1)] px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-teal">
+              <span className="rounded border border-[var(--color-border-strong)] bg-[oklch(0.78_0.11_210/0.12)] px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-teal">
                 {step.agent}
               </span>
               <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">·</span>
-              <span className="rounded border border-[var(--color-border)] bg-[oklch(0.20_0.022_250)] px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+              <span className="rounded border border-[var(--color-border)] bg-[oklch(0.98_0.006_220)] px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
                 <Cpu className="mr-1 inline h-2.5 w-2.5" />{step.ms}ms
               </span>
             </div>
@@ -123,7 +127,7 @@ function StepCard({ step, idx }: { step: typeof traceSteps[number]; idx: number 
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <pre className="mt-3 overflow-x-auto rounded-md border border-[var(--color-border)] bg-[oklch(0.10_0.018_250)] p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+            <pre className="mt-3 overflow-x-auto rounded-xl border border-[var(--color-border)] bg-[oklch(0.98_0.006_220)] p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
               <code>{JSON.stringify(step.data, null, 2)}</code>
             </pre>
 

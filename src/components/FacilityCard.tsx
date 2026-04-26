@@ -32,7 +32,7 @@ export function FacilityCard({ f, delay, onTrace }: { f: Facility; delay: number
         <div className="font-mono uppercase tracking-wider text-[10px] mb-1">Equipment</div>
         <div className="flex flex-wrap gap-1.5">
           {f.equipment.slice(0, 3).map((e) => (
-            <span key={e} className="rounded border border-[var(--color-border)] bg-[oklch(0.20_0.02_250)] px-2 py-0.5 font-mono text-[10px]">{e}</span>
+            <span key={e} className="rounded border border-[var(--color-border)] bg-[oklch(0.98_0.006_220)] px-2 py-0.5 font-mono text-[10px]">{e}</span>
           ))}
           {f.equipment.length > 3 && (
             <span className="rounded border border-[var(--color-border)] bg-transparent px-2 py-0.5 font-mono text-[10px] text-teal">+{f.equipment.length - 3} more</span>
@@ -47,7 +47,7 @@ export function FacilityCard({ f, delay, onTrace }: { f: Facility; delay: number
         >
           View Thought Process
         </button>
-        <button className="rounded-md border border-[var(--color-border)] bg-[oklch(0.20_0.02_250)] px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground">
+        <button className="rounded-md border border-[var(--color-border)] bg-[oklch(0.98_0.006_220)] px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground">
           View on Map
         </button>
       </div>

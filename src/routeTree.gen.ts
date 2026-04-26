@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ValidatorRouteImport } from './routes/validator'
 import { Route as TraceRouteImport } from './routes/trace'
 import { Route as DiscoveryRouteImport } from './routes/discovery'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CrisisMapRouteImport } from './routes/crisis-map'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -30,6 +31,11 @@ const DiscoveryRoute = DiscoveryRouteImport.update({
   path: '/discovery',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CrisisMapRoute = CrisisMapRouteImport.update({
   id: '/crisis-map',
   path: '/crisis-map',
@@ -44,6 +50,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/crisis-map': typeof CrisisMapRoute
+  '/dashboard': typeof DashboardRoute
   '/discovery': typeof DiscoveryRoute
   '/trace': typeof TraceRoute
   '/validator': typeof ValidatorRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/crisis-map': typeof CrisisMapRoute
+  '/dashboard': typeof DashboardRoute
   '/discovery': typeof DiscoveryRoute
   '/trace': typeof TraceRoute
   '/validator': typeof ValidatorRoute
@@ -59,21 +67,42 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/crisis-map': typeof CrisisMapRoute
+  '/dashboard': typeof DashboardRoute
   '/discovery': typeof DiscoveryRoute
   '/trace': typeof TraceRoute
   '/validator': typeof ValidatorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/crisis-map' | '/discovery' | '/trace' | '/validator'
+  fullPaths:
+    | '/'
+    | '/crisis-map'
+    | '/dashboard'
+    | '/discovery'
+    | '/trace'
+    | '/validator'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/crisis-map' | '/discovery' | '/trace' | '/validator'
-  id: '__root__' | '/' | '/crisis-map' | '/discovery' | '/trace' | '/validator'
+  to:
+    | '/'
+    | '/crisis-map'
+    | '/dashboard'
+    | '/discovery'
+    | '/trace'
+    | '/validator'
+  id:
+    | '__root__'
+    | '/'
+    | '/crisis-map'
+    | '/dashboard'
+    | '/discovery'
+    | '/trace'
+    | '/validator'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CrisisMapRoute: typeof CrisisMapRoute
+  DashboardRoute: typeof DashboardRoute
   DiscoveryRoute: typeof DiscoveryRoute
   TraceRoute: typeof TraceRoute
   ValidatorRoute: typeof ValidatorRoute
@@ -102,6 +131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoveryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/crisis-map': {
       id: '/crisis-map'
       path: '/crisis-map'
@@ -122,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CrisisMapRoute: CrisisMapRoute,
+  DashboardRoute: DashboardRoute,
   DiscoveryRoute: DiscoveryRoute,
   TraceRoute: TraceRoute,
   ValidatorRoute: ValidatorRoute,
@@ -129,3 +166,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

@@ -45,8 +45,8 @@ function CrisisMap() {
                 className={
                   "rounded-md border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider backdrop-blur-md transition-colors " +
                   (filter === f
-                    ? "border-[var(--color-primary)] bg-[oklch(0.79_0.14_188/0.18)] text-teal"
-                    : "border-[var(--color-border)] bg-[oklch(0.14_0.018_250/0.75)] text-muted-foreground hover:text-foreground")
+                    ? "border-[var(--color-primary)] bg-[oklch(0.78_0.11_210/0.18)] text-teal"
+                    : "border-[var(--color-border)] bg-[oklch(1_0_0/0.8)] text-muted-foreground hover:text-foreground")
                 }
               >
                 {f === "all" ? "All" : `${f} Gaps`}
@@ -55,7 +55,7 @@ function CrisisMap() {
           </div>
 
           {/* Legend top-right */}
-          <div className="absolute right-4 top-4 z-[500] rounded-md border border-[var(--color-border)] bg-[oklch(0.14_0.018_250/0.85)] p-3 backdrop-blur-md">
+          <div className="absolute right-4 top-4 z-[500] rounded-xl border border-[var(--color-border)] bg-[oklch(1_0_0/0.84)] p-3 backdrop-blur-md">
             <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Legend</div>
             <Legend color="var(--color-destructive)" size={14} label="Medical Desert (0–1 / 100k)" />
             <Legend color="var(--color-warning)"     size={11} label="Underserved (2–5 / 100k)" />
@@ -135,7 +135,7 @@ function CrisisMap() {
             </thead>
             <tbody>
               {criticalPins.slice(0, 10).map((p) => (
-                <tr key={p.pin} className="border-b border-[var(--color-border)] hover:bg-[oklch(0.20_0.022_250/0.5)]">
+                <tr key={p.pin} className="border-b border-[var(--color-border)] transition-colors hover:bg-[oklch(0.96_0.01_220)]">
                   <td className="py-2 pr-4 text-teal">{p.pin}</td>
                   <td className="py-2 pr-4">{p.state}</td>
                   <td className="py-2 pr-4">{p.district}</td>

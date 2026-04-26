@@ -5,6 +5,7 @@ import { TrustRing } from "@/components/TrustRing";
 import { Typewriter } from "@/components/Typewriter";
 import { facilities, type Facility } from "@/data/mockData";
 import { RotateCw, AlertOctagon, CheckCircle2, FileSearch } from "lucide-react";
+import { validateFacilityAgent } from "@/lib/agenticMvp";
 
 export const Route = createFileRoute("/validator")({
   head: () => ({
@@ -19,17 +20,18 @@ export const Route = createFileRoute("/validator")({
 });
 
 function ValidatorPage() {
-  const [selected, setSelected] = useState<Facility>(facilities[1]); // Apex Care default — most interesting
+  const [selected, setSelected] = useState<Facility>(() => validateFacilityAgent(facilities[1])); // Apex Care default — most interesting
   const [runId, setRunId] = useState(0);
   const [step, setStep] = useState(0);
 
   const onSelect = (f: Facility) => {
-    setSelected(f);
+    setSelected(validateFacilityAgent(f));
     setRunId((r) => r + 1);
     setStep(0);
   };
 
   const revalidate = () => {
+    setSelected((prev) => validateFacilityAgent(prev));
     setRunId((r) => r + 1);
     setStep(0);
   };
@@ -64,7 +66,7 @@ function ValidatorPage() {
           <select
             value={selected.id}
             onChange={(e) => onSelect(facilities.find((f) => f.id === e.target.value)!)}
-            className="w-full rounded-md border border-[var(--color-border-strong)] bg-[oklch(0.16_0.018_250)] px-3 py-2 font-mono text-sm text-foreground outline-none focus:border-[var(--color-primary)]"
+            className="w-full rounded-xl border border-[var(--color-border-strong)] bg-[oklch(1_0_0/0.92)] px-3 py-2 font-mono text-sm text-foreground outline-none focus:border-[var(--color-primary)]"
           >
             {facilities.map((f) => (
               <option key={f.id} value={f.id}>{f.name} — {f.city}</option>
@@ -82,11 +84,11 @@ function ValidatorPage() {
           <textarea
             readOnly
             value={selected.rawReport}
-            className="h-56 w-full resize-none rounded-md border border-[var(--color-border)] bg-[oklch(0.10_0.018_250)] p-3 font-mono text-xs leading-relaxed text-muted-foreground outline-none"
+            className="h-56 w-full resize-none rounded-xl border border-[var(--color-border)] bg-[oklch(0.98_0.006_220)] p-3 font-mono text-xs leading-relaxed text-muted-foreground outline-none"
           />
           <button
             onClick={revalidate}
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-[var(--color-border-strong)] bg-transparent px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-teal transition-colors hover:bg-[oklch(0.79_0.14_188/0.1)]"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--color-border-strong)] bg-transparent px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-teal transition-colors hover:bg-[oklch(0.78_0.11_210/0.12)]"
           >
             <RotateCw className="h-3.5 w-3.5" /> Re-Validate
           </button>
@@ -103,7 +105,7 @@ function ValidatorPage() {
           <TrustRing score={v.computedScore} size={84} pulse />
         </div>
 
-        <div className="flex-1 overflow-y-auto rounded-md border border-[var(--color-border)] bg-[oklch(0.10_0.018_250)] p-4 font-mono text-xs leading-relaxed">
+        <div className="flex-1 overflow-y-auto rounded-xl border border-[var(--color-border)] bg-[oklch(0.98_0.006_220)] p-4 font-mono text-xs leading-relaxed">
           <StreamingLines key={runId} lines={lines} onAdvance={setStep} />
         </div>
 
@@ -157,7 +159,7 @@ function StreamingLines({ lines, onAdvance }: { lines: { tag: string; text: stri
 
 function Stat({ icon: Icon, label, value, tone }: { icon: typeof CheckCircle2; label: string; value: string; tone: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-md border border-[var(--color-border)] bg-[oklch(0.16_0.018_250)] p-3">
+    <div className="flex items-center gap-3 rounded-xl border border-[var(--color-border)] bg-[oklch(1_0_0/0.9)] p-3">
       <Icon className={`h-4 w-4 ${tone}`} />
       <div>
         <div className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>

@@ -14,7 +14,7 @@ function NotFoundComponent() {
         </p>
         <a
           href="/"
-          className="mt-6 inline-flex items-center justify-center rounded-md border border-[var(--color-border-strong)] bg-transparent px-4 py-2 font-mono text-xs uppercase tracking-wider text-teal hover:bg-[oklch(0.79_0.14_188/0.1)]"
+          className="mt-6 inline-flex items-center justify-center rounded-md border border-[var(--color-border-strong)] bg-transparent px-4 py-2 font-mono text-xs uppercase tracking-wider text-teal hover:bg-[oklch(0.78_0.11_210/0.14)]"
         >
           Return to Dashboard
         </a>
@@ -45,7 +45,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
@@ -59,11 +59,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <div className="min-h-screen text-foreground scanlines">
+    <div className="min-h-screen text-foreground">
       <AppSidebar />
-      <div className="ml-16 flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col md:ml-16">
         <TopHeader />
-        <main className="flex-1 px-8 py-8">
+        <main className="flex-1 px-4 py-5 sm:px-6 md:px-8 md:py-7">
           <Outlet />
         </main>
       </div>

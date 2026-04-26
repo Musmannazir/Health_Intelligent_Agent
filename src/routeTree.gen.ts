@@ -9,8 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ValidatorRouteImport } from './routes/validator'
+import { Route as TraceRouteImport } from './routes/trace'
+import { Route as DiscoveryRouteImport } from './routes/discovery'
+import { Route as CrisisMapRouteImport } from './routes/crisis-map'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ValidatorRoute = ValidatorRouteImport.update({
+  id: '/validator',
+  path: '/validator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TraceRoute = TraceRouteImport.update({
+  id: '/trace',
+  path: '/trace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoveryRoute = DiscoveryRouteImport.update({
+  id: '/discovery',
+  path: '/discovery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CrisisMapRoute = CrisisMapRouteImport.update({
+  id: '/crisis-map',
+  path: '/crisis-map',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +43,72 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/crisis-map': typeof CrisisMapRoute
+  '/discovery': typeof DiscoveryRoute
+  '/trace': typeof TraceRoute
+  '/validator': typeof ValidatorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/crisis-map': typeof CrisisMapRoute
+  '/discovery': typeof DiscoveryRoute
+  '/trace': typeof TraceRoute
+  '/validator': typeof ValidatorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/crisis-map': typeof CrisisMapRoute
+  '/discovery': typeof DiscoveryRoute
+  '/trace': typeof TraceRoute
+  '/validator': typeof ValidatorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/crisis-map' | '/discovery' | '/trace' | '/validator'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/crisis-map' | '/discovery' | '/trace' | '/validator'
+  id: '__root__' | '/' | '/crisis-map' | '/discovery' | '/trace' | '/validator'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CrisisMapRoute: typeof CrisisMapRoute
+  DiscoveryRoute: typeof DiscoveryRoute
+  TraceRoute: typeof TraceRoute
+  ValidatorRoute: typeof ValidatorRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/validator': {
+      id: '/validator'
+      path: '/validator'
+      fullPath: '/validator'
+      preLoaderRoute: typeof ValidatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trace': {
+      id: '/trace'
+      path: '/trace'
+      fullPath: '/trace'
+      preLoaderRoute: typeof TraceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discovery': {
+      id: '/discovery'
+      path: '/discovery'
+      fullPath: '/discovery'
+      preLoaderRoute: typeof DiscoveryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crisis-map': {
+      id: '/crisis-map'
+      path: '/crisis-map'
+      fullPath: '/crisis-map'
+      preLoaderRoute: typeof CrisisMapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,7 +121,20 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CrisisMapRoute: CrisisMapRoute,
+  DiscoveryRoute: DiscoveryRoute,
+  TraceRoute: TraceRoute,
+  ValidatorRoute: ValidatorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

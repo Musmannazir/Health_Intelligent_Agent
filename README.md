@@ -136,6 +136,6 @@ This is a functional agentic MVP demonstrating:
 1. Reasoning over unstructured facility narratives.
 2. Trust-aware decision support.
 3. Transparent, traceable recommendations.
-4. Crisis visualization for planning and intervention.
+4. Crisis visualization for planning and for intervention.
 
 With the official dataset plugged in, the same architecture is ready to scale to challenge-grade evaluation.
